@@ -1,0 +1,159 @@
+{
+  "info": {
+    "name": "Betting Game API - Crash",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "roundId",
+      "value": ""
+    },
+    {
+      "key": "idempotencyKey",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "List games",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/games"
+      }
+    },
+    {
+      "name": "Wallet",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/wallet"
+      }
+    },
+    {
+      "name": "Crash - start (new key each send)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('idempotencyKey', pm.variables.replaceIn('{{$guid}}'));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.success) pm.collectionVariables.set('roundId', body.data.round.roundId);",
+              "pm.test('201 Created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stake\": 1000\n}"
+        },
+        "url": "{{baseUrl}}/games/crash/start"
+      }
+    },
+    {
+      "name": "Crash - replay last start (same key, no second debit)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stake\": 1000\n}"
+        },
+        "url": "{{baseUrl}}/games/crash/start"
+      }
+    },
+    {
+      "name": "Crash - poll round",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/games/crash/rounds/{{roundId}}"
+      }
+    },
+    {
+      "name": "Crash - cash out",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"roundId\": \"{{roundId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/games/crash/cashout"
+      }
+    },
+    {
+      "name": "Crash - invalid stake (expect 400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stake\": 1.5\n}"
+        },
+        "url": "{{baseUrl}}/games/crash/start"
+      }
+    },
+    {
+      "name": "History",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/history?limit=20"
+      }
+    }
+  ]
+}

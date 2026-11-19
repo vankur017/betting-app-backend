@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+
+# Test output
+coverage
+
+# Environment: DATABASE_URL and other secrets live here (keep the example)
+.env
+.env.*
+!.env.example
+
+# Prisma generated client (rebuilt by `npx prisma generate`)
+/src/generated/
+/generated/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+.DS_Store
+Thumbs.db
