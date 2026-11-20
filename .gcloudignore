@@ -1,0 +1,19 @@
+# Files NOT uploaded by `gcloud run deploy --source .`
+# (the Docker build then also applies .dockerignore)
+.gcloudignore
+.git
+.gitignore
+node_modules
+npm-debug.log*
+*.log
+
+# Secrets and local data stay on your laptop
+.env
+.env.*
+!.env.example
+data/
+
+# Not needed in the image
+test/
+coverage/
+postman/

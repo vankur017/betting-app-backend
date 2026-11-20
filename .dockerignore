@@ -1,0 +1,30 @@
+# Dependencies are installed inside the image
+node_modules
+npm-debug.log*
+*.log
+
+# Secrets and local config: pass env vars at `docker run` instead
+.env
+.env.*
+!.env.example
+
+# Local data store: lives in the /app/data volume, never baked into the image
+data
+
+# Not needed at runtime
+test
+coverage
+postman
+README.md
+
+# VCS, editors, OS
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docker files themselves
+Dockerfile
+.dockerignore
