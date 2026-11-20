@@ -1,6 +1,7 @@
 "use strict";
 
 const { randomInt } = require("node:crypto");
+const { payoutFor, formatMultiplier } = require("../shared/math");
 
 // crypto.randomInt requires (max - min) < 2^48.
 const RANDOM_SPAN = 2 ** 48 - 1;
@@ -38,16 +39,6 @@ function crashDurationMs(crashX100, config) {
   while (t > 0 && multiplierAtX100(t - 1, config) >= crashX100) t -= 1;
   while (multiplierAtX100(t, config) < crashX100) t += 1;
   return t;
-}
-
-/** Virtual return in minor units: stake x multiplier, rounded down. Exact integer math. */
-function payoutFor(stake, multiplierX100) {
-  const product = stake * multiplierX100;
-  return (product - (product % 100)) / 100;
-}
-
-function formatMultiplier(x100) {
-  return `${Math.floor(x100 / 100)}.${String(x100 % 100).padStart(2, "0")}x`;
 }
 
 module.exports = {

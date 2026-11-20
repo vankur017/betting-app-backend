@@ -1,5 +1,7 @@
 "use strict";
 
+const path = require("node:path");
+
 require("dotenv").config({ quiet: true });
 
 function positiveIntFromEnv(name, fallback) {
@@ -12,8 +14,16 @@ function positiveIntFromEnv(name, fallback) {
   return value;
 }
 
+/** DATA_FILE is relative to the backend folder. Set it to "memory" to keep data in memory only. */
+function dataFileFromEnv() {
+  const raw = (process.env.DATA_FILE ?? "").trim();
+  if (raw.toLowerCase() === "memory") return null;
+  return path.resolve(__dirname, "..", "..", raw || "data/store.json");
+}
+
 module.exports = {
   port: positiveIntFromEnv("PORT", 5000),
+  dataFile: dataFileFromEnv(),
   corsOrigins: (process.env.CORS_ORIGIN || "http://localhost:5173")
     .split(",")
     .map((origin) => origin.trim())

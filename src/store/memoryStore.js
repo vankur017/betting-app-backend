@@ -29,6 +29,7 @@ function createMemoryStore({ demoPlayer, wallet, now }) {
     ],
     rounds: new Map(), // roundId -> round, in creation order
     activeCrashRoundId: null,
+    activeMinesRoundId: null,
     idempotency: new Map(),
   };
 }

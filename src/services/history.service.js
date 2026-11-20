@@ -4,9 +4,11 @@ const { toIso } = require("../utils/time");
 
 function createHistoryService({ store, crashService }) {
   return {
-    recent(limit) {
+    /** Newest first. `game` (optional) keeps only that game's rounds. */
+    recent(limit, game) {
       crashService.syncActive();
       return Array.from(store.rounds.values())
+        .filter((round) => !game || round.game === game)
         .reverse()
         .slice(0, limit)
         .map((round) => ({

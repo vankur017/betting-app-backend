@@ -9,6 +9,9 @@ coverage
 .env.*
 !.env.example
 
+# Local data file (DATA_FILE), temp writes and moved-aside corrupt copies
+/data/
+
 # Prisma generated client (rebuilt by `npx prisma generate`)
 /src/generated/
 /generated/
