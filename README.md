@@ -64,7 +64,9 @@ Postman: import `postman/betting-game-crash.postman_collection.json`.
 ### Crash rules
 
 - Crash point: CSPRNG (`crypto.randomInt`). `crash = 0.99 / (1 − u)`, floored to 0.01x and capped at 1000.00x,
-  so `P(crash ≥ m) = 0.99 / m`. About 1% of rounds bust at 1.00x. See `src/games/crash/crash.rules.js`.
+  so `P(crash ≥ m) = 0.99 / m` for m ≥ 1.01x. About 2% of rounds end at 1.00x (values below 1.00x are raised
+  to it, and 1.00x–1.01x floors to it). Players get back about 98.2–98.4% on average whatever they cash out at.
+  See `src/games/crash/crash.rules.js`.
 - Multiplier: `floor(100 × e^(0.00006 × elapsedMs))`, so 2.00x after about 11.6 s.
 - Return: `floor(stake × multiplier)`, integer math.
 - Stake: 10 to 100000 minor units (0.10 to 1,000.00 VC). Config lives in `src/config/games.js`.

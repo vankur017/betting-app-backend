@@ -10,8 +10,9 @@ const RANDOM_SPAN = 2 ** 48 - 1;
  * Generates the crash point in hundredths, using a CSPRNG.
  *
  * u = n / RANDOM_SPAN is uniform in [0, 1). crash = (1 - houseEdge) / (1 - u), floored to 0.01x
- * and clamped to [1.00x, max]. So P(crash >= m) = (1 - houseEdge) / m for every m >= 1.00x,
- * and about houseEdge of rounds crash immediately at 1.00x.
+ * and clamped to [1.00x, max]. So P(crash >= m) = (1 - houseEdge) / m for every m >= 1.01x.
+ * About 2 x houseEdge of rounds end at 1.00x: values below 1.00x are raised to it, and values in
+ * [1.00x, 1.01x) floor to it. A cash-out must land strictly before the crash point.
  * BigInt keeps the calculation exact.
  */
 function generateCrashPointX100({ houseEdgeBps, maxMultiplierX100 }, randomIntFn = randomInt) {

@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("node:path");
+const { parseCorsOrigins } = require("./cors");
 
 require("dotenv").config({ quiet: true });
 
@@ -24,10 +25,7 @@ function dataFileFromEnv() {
 module.exports = {
   port: positiveIntFromEnv("PORT", 5000),
   dataFile: dataFileFromEnv(),
-  corsOrigins: (process.env.CORS_ORIGIN || "http://localhost:5173")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  corsOrigins: parseCorsOrigins(process.env.CORS_ORIGIN),
   // No authentication in this MVP: every request acts for this single demo player.
   demoPlayer: { id: "demo-player", name: "Demo Player" },
   wallet: {

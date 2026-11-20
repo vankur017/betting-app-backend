@@ -262,6 +262,20 @@ test("history can be filtered to one game", () =>
     assert.equal(bad.body.error.code, "INVALID_GAME");
   }));
 
+test("history items carry a short result label for every game", () =>
+  withApi({ diceRoll: () => 4999 }, async ({ post, call }) => {
+    await post("/games/plinko/play", { stake: 1000, rows: 8, risk: "low" });
+    await post("/games/dice/roll", { stake: 1000, target: 5000, direction: "under" });
+    const { roundId } = (await post("/games/mines/start", { stake: 1000, mineCount: 3 })).body.data.round;
+
+    let history = (await call("GET", "/history")).body.data;
+    assert.deepEqual(history.map((r) => r.resultLabel), [null, "49.99", "0.50x"]);
+
+    await call("POST", "/games/mines/reveal", { roundId, tile: 0 });
+    history = (await call("GET", "/history?game=mines")).body.data;
+    assert.equal(history[0].resultLabel, "Bust");
+  }));
+
 test("round lookups are scoped to their game", () =>
   withApi({}, async ({ post, call }) => {
     const { roundId } = (await post("/games/dice/roll", { stake: 1000, target: 5000, direction: "under" })).body.data.round;
